@@ -1,6 +1,6 @@
 import { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, Grid, Center } from '@react-three/drei';
+import { OrbitControls, Grid, Center } from '@react-three/drei';
 import Model from './Model';
 
 function LoadingSpinner() {
@@ -25,23 +25,14 @@ export default function ModelViewer({ fileData, onModelLoad }) {
           onClick={() => setAutoRotate(!autoRotate)}
           title="Auto Rotate"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
-            <path d="M21 3v5h-5"></path>
-          </svg>
+          <span style={{ fontSize: '20px', lineHeight: 1 }}>&#x21bb;</span>
         </button>
         <button
           className={`control-btn ${showGrid ? 'active' : ''}`}
           onClick={() => setShowGrid(!showGrid)}
           title="Toggle Grid"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="3" y1="9" x2="21" y2="9"></line>
-            <line x1="3" y1="15" x2="21" y2="15"></line>
-            <line x1="9" y1="3" x2="9" y2="21"></line>
-            <line x1="15" y1="3" x2="15" y2="21"></line>
-          </svg>
+          <span style={{ fontSize: '18px', lineHeight: 1 }}>#</span>
         </button>
       </div>
 
@@ -95,7 +86,7 @@ export default function ModelViewer({ fileData, onModelLoad }) {
           autoRotate={false}
         />
 
-        <Environment preset="city" />
+{/* Environment removed - was causing CORS issues with external HDR files */}
       </Canvas>
 
       <div className="viewer-instructions">
