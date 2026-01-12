@@ -11,6 +11,10 @@ npm run lint     # Run ESLint
 npm run preview  # Preview production build
 ```
 
+## Deployment
+
+Automatically deployed to GitHub Pages on push to `main` via GitHub Actions.
+
 ## Architecture
 
 This is a 3D model viewer for 3D printing businesses built with React, Vite, and Three.js (via React Three Fiber).
