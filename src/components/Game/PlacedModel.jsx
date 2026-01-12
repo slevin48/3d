@@ -1,11 +1,11 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { base64ToArrayBuffer } from '../../utils/base64';
 
-export default function Model({ fileData, onLoad, autoRotate }) {
+export default function PlacedModel({ modelData }) {
   const groupRef = useRef();
 
   const centerAndScaleObject = useCallback((object) => {
@@ -14,14 +14,15 @@ export default function Model({ fileData, onLoad, autoRotate }) {
     const size = box.getSize(new THREE.Vector3());
 
     const maxDim = Math.max(size.x, size.y, size.z);
-    const scale = 4 / maxDim;
+    const scale = 2 / maxDim; // Smaller scale for world placement
 
     object.position.sub(center);
+    object.position.y += size.y * scale / 2; // Sit on ground
     object.scale.multiplyScalar(scale);
   }, []);
 
   useEffect(() => {
-    if (!fileData || !groupRef.current) return;
+    if (!modelData || !groupRef.current) return;
 
     // Clear previous children
     while (groupRef.current.children.length > 0) {
@@ -29,22 +30,23 @@ export default function Model({ fileData, onLoad, autoRotate }) {
     }
 
     try {
+      const data = base64ToArrayBuffer(modelData.data);
       let object;
 
-      if (fileData.type === '.stl') {
+      if (modelData.type === '.stl') {
         const loader = new STLLoader();
-        const geom = loader.parse(fileData.data);
-        geom.computeVertexNormals();
+        const geometry = loader.parse(data);
+        geometry.computeVertexNormals();
         const material = new THREE.MeshStandardMaterial({
           color: 0x3b82f6,
           metalness: 0.3,
           roughness: 0.6,
-          flatShading: false,
+          flatShading: true,
         });
-        object = new THREE.Mesh(geom, material);
-      } else if (fileData.type === '.obj') {
+        object = new THREE.Mesh(geometry, material);
+      } else if (modelData.type === '.obj') {
         const loader = new OBJLoader();
-        const text = new TextDecoder().decode(fileData.data);
+        const text = typeof data === 'string' ? data : new TextDecoder().decode(data);
         object = loader.parse(text);
         object.traverse((child) => {
           if (child.isMesh) {
@@ -52,20 +54,20 @@ export default function Model({ fileData, onLoad, autoRotate }) {
               color: 0x3b82f6,
               metalness: 0.3,
               roughness: 0.6,
+              flatShading: true,
             });
           }
         });
-      } else if (fileData.type === '.gltf' || fileData.type === '.glb') {
+      } else if (modelData.type === '.gltf' || modelData.type === '.glb') {
         const loader = new GLTFLoader();
-        const arrayBuffer = fileData.data instanceof ArrayBuffer
-          ? fileData.data
-          : new TextEncoder().encode(fileData.data).buffer;
+        const arrayBuffer = data instanceof ArrayBuffer
+          ? data
+          : new TextEncoder().encode(data).buffer;
 
         loader.parse(arrayBuffer, '', (gltf) => {
           const model = gltf.scene;
           centerAndScaleObject(model);
           groupRef.current.add(model);
-          onLoad?.();
         }, (error) => {
           console.error('Error loading GLTF:', error);
         });
@@ -75,20 +77,22 @@ export default function Model({ fileData, onLoad, autoRotate }) {
       if (object) {
         centerAndScaleObject(object);
         groupRef.current.add(object);
-        onLoad?.();
       }
     } catch (error) {
-      console.error('Error parsing model:', error);
+      console.error('Error loading placed model:', error);
     }
-  }, [fileData, onLoad, centerAndScaleObject]);
+  }, [modelData, centerAndScaleObject]);
 
-  useFrame((state, delta) => {
-    if (autoRotate && groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.3;
-    }
-  });
+  const { worldPosition, worldRotation, worldScale } = modelData;
 
-  if (!fileData) return null;
-
-  return <group ref={groupRef} />;
+  return (
+    <group
+      ref={groupRef}
+      position={[worldPosition.x, worldPosition.y, worldPosition.z]}
+      rotation={[0, worldRotation, 0]}
+      scale={worldScale}
+      castShadow
+      receiveShadow
+    />
+  );
 }

@@ -15,7 +15,6 @@ function LoadingSpinner() {
 export default function ModelViewer({ fileData, onModelLoad }) {
   const [autoRotate, setAutoRotate] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
-  const [wireframe, setWireframe] = useState(false);
 
   return (
     <div className="viewer-container">
@@ -56,7 +55,6 @@ export default function ModelViewer({ fileData, onModelLoad }) {
               fileData={fileData}
               onLoad={onModelLoad}
               autoRotate={autoRotate}
-              wireframe={wireframe}
             />
           </Center>
         </Suspense>

@@ -1,0 +1,127 @@
+.mobile-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 100;
+  padding: 20px;
+}
+
+.joystick-zone {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.joystick-base {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.joystick-stick {
+  width: 50px;
+  height: 50px;
+  background: rgba(59, 130, 246, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transition: transform 0.05s ease-out;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.joystick-stick.active {
+  background: rgba(59, 130, 246, 0.9);
+  box-shadow: 0 2px 15px rgba(59, 130, 246, 0.5);
+}
+
+.joystick-label,
+.camera-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 8px;
+}
+
+.camera-zone {
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  touch-action: none;
+  backdrop-filter: blur(4px);
+}
+
+.mobile-hint {
+  position: fixed;
+  bottom: 210px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  pointer-events: none;
+}
+
+.mobile-hint span {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+/* Hide on desktop */
+@media (min-width: 769px) {
+  .mobile-controls {
+    display: none;
+  }
+}
+
+/* Adjust for smaller phones */
+@media (max-height: 600px) {
+  .mobile-controls {
+    height: 150px;
+    padding: 10px;
+  }
+
+  .joystick-zone,
+  .camera-zone {
+    width: 120px;
+    height: 120px;
+  }
+
+  .joystick-base {
+    width: 80px;
+    height: 80px;
+  }
+
+  .joystick-stick {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mobile-hint {
+    bottom: 160px;
+  }
+}

@@ -1,0 +1,135 @@
+.game-container {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.game-hud > * {
+  pointer-events: auto;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.back-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.player-name {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.name-tag {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 2px;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.model-count {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  backdrop-filter: blur(8px);
+}
+
+.controls-help {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 50;
+}
+
+.help-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 10px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.help-item kbd {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Hide keyboard help on mobile */
+@media (max-width: 768px) {
+  .controls-help {
+    display: none;
+  }
+
+  .game-hud {
+    padding: 10px 15px;
+  }
+
+  .back-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .name-tag {
+    padding: 6px 14px;
+    font-size: 14px;
+  }
+
+  .model-count {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 400px) {
+  .player-name {
+    display: none;
+  }
+}

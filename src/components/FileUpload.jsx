@@ -3,22 +3,7 @@ import { useCallback } from 'react';
 const SUPPORTED_FORMATS = ['.stl', '.obj', '.gltf', '.glb'];
 
 export default function FileUpload({ onFileLoad, isLoading }) {
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) processFile(file);
-  }, []);
-
-  const handleDragOver = useCallback((e) => {
-    e.preventDefault();
-  }, []);
-
-  const handleFileSelect = useCallback((e) => {
-    const file = e.target.files[0];
-    if (file) processFile(file);
-  }, []);
-
-  const processFile = (file) => {
+  const processFile = useCallback((file) => {
     const extension = '.' + file.name.split('.').pop().toLowerCase();
     if (!SUPPORTED_FORMATS.includes(extension)) {
       alert(`Unsupported format. Please upload: ${SUPPORTED_FORMATS.join(', ')}`);
@@ -40,7 +25,22 @@ export default function FileUpload({ onFileLoad, isLoading }) {
     } else {
       reader.readAsArrayBuffer(file);
     }
-  };
+  }, [onFileLoad]);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  }, [processFile]);
+
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+  }, []);
+
+  const handleFileSelect = useCallback((e) => {
+    const file = e.target.files[0];
+    if (file) processFile(file);
+  }, [processFile]);
 
   return (
     <div
