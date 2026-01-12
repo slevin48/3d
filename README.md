@@ -1,16 +1,51 @@
-# React + Vite
+# 3D Print Viewer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web-based 3D model viewer for 3D printing businesses. Upload and visualize STL, OBJ, GLTF, and GLB files directly in your browser.
 
-Currently, two official plugins are available:
+**Live Demo:** https://slevin48.github.io/3d/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Drag & Drop Upload** - Simply drag your 3D files or click to browse
+- **Multiple Formats** - Supports STL, OBJ, GLTF, and GLB files
+- **Interactive Controls** - Rotate, zoom, and pan to inspect models from any angle
+- **Auto-Rotate** - Toggle automatic rotation to view all sides
+- **Reference Grid** - Optional grid for scale and orientation reference
+- **File Info** - Displays filename and file size
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting Started
 
-## Expanding the ESLint configuration
+```bash
+# Install dependencies
+npm install
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Tech Stack
+
+- [React](https://react.dev/) - UI framework
+- [Vite](https://vite.dev/) - Build tool
+- [Three.js](https://threejs.org/) - 3D rendering
+- [React Three Fiber](https://r3f.docs.pmnd.rs/) - React renderer for Three.js
+- [Drei](https://drei.docs.pmnd.rs/) - Useful helpers for R3F
+
+## Controls
+
+| Action | Input |
+|--------|-------|
+| Rotate | Drag |
+| Zoom | Scroll |
+| Pan | Shift + Drag |
+
+## Deployment
+
+Automatically deployed to GitHub Pages on push to `main` via GitHub Actions.
+
+## License
+
+MIT
