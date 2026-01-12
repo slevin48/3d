@@ -4,15 +4,20 @@ import * as THREE from 'three';
 import Bruce from './Bruce';
 
 const MOVE_SPEED = 5;
+const SPRINT_SPEED = 10;
 const ROTATION_SPEED = 2;
 const CAMERA_DISTANCE = 8;
 const CAMERA_HEIGHT = 4;
+const JUMP_FORCE = 8;
+const GRAVITY = 20;
 
-export default function PlayerController({ joystickInput, cameraRotationInput }) {
+export default function PlayerController({ joystickInput, cameraRotationInput, onPlayerUpdate }) {
   const { camera } = useThree();
   const [position, setPosition] = useState({ x: 0, y: 0, z: 10 });
   const [rotation, setRotation] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
+  const [, setVerticalVelocity] = useState(0);
+  const [isGrounded, setIsGrounded] = useState(true);
 
   const keysPressed = useRef({
     forward: false,
@@ -21,7 +26,14 @@ export default function PlayerController({ joystickInput, cameraRotationInput })
     right: false,
     rotateLeft: false,
     rotateRight: false,
+    sprint: false,
+    jump: false,
   });
+
+  // Update parent with player position and rotation
+  useEffect(() => {
+    onPlayerUpdate?.(position, rotation);
+  }, [position, rotation, onPlayerUpdate]);
 
   // Keyboard controls
   useEffect(() => {
@@ -48,6 +60,18 @@ export default function PlayerController({ joystickInput, cameraRotationInput })
           break;
         case 'KeyE':
           keysPressed.current.rotateRight = true;
+          break;
+        case 'ShiftLeft':
+        case 'ShiftRight':
+          keysPressed.current.sprint = true;
+          break;
+        case 'Space':
+          if (!keysPressed.current.jump && isGrounded) {
+            keysPressed.current.jump = true;
+            setVerticalVelocity(JUMP_FORCE);
+            setIsGrounded(false);
+          }
+          e.preventDefault(); // Prevent page scroll
           break;
       }
     };
@@ -76,6 +100,13 @@ export default function PlayerController({ joystickInput, cameraRotationInput })
         case 'KeyE':
           keysPressed.current.rotateRight = false;
           break;
+        case 'ShiftLeft':
+        case 'ShiftRight':
+          keysPressed.current.sprint = false;
+          break;
+        case 'Space':
+          keysPressed.current.jump = false;
+          break;
       }
     };
 
@@ -86,7 +117,7 @@ export default function PlayerController({ joystickInput, cameraRotationInput })
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, []);
+  }, [isGrounded]);
 
   useFrame((state, delta) => {
     const keys = keysPressed.current;
@@ -129,11 +160,14 @@ export default function PlayerController({ joystickInput, cameraRotationInput })
     const newRotation = rotation + rotationDelta;
     setRotation(newRotation);
 
+    // Determine movement speed (sprint or normal)
+    const currentSpeed = keys.sprint ? SPRINT_SPEED : MOVE_SPEED;
+
     // Calculate movement direction based on player rotation
     if (moving) {
       const moveDir = new THREE.Vector3(moveX, 0, moveZ);
       moveDir.applyAxisAngle(new THREE.Vector3(0, 1, 0), newRotation);
-      moveDir.multiplyScalar(MOVE_SPEED * delta);
+      moveDir.multiplyScalar(currentSpeed * delta);
 
       setPosition((prev) => ({
         x: prev.x + moveDir.x,
@@ -141,6 +175,31 @@ export default function PlayerController({ joystickInput, cameraRotationInput })
         z: prev.z + moveDir.z,
       }));
     }
+
+    // Apply gravity and update vertical position
+    setVerticalVelocity((prevVelocity) => {
+      const newVelocity = prevVelocity - GRAVITY * delta;
+
+      setPosition((prev) => {
+        const newY = prev.y + newVelocity * delta;
+
+        // Ground collision (y = 0)
+        if (newY <= 0) {
+          setIsGrounded(true);
+          return { ...prev, y: 0 };
+        }
+
+        setIsGrounded(false);
+        return { ...prev, y: newY };
+      });
+
+      // Stop falling when grounded
+      if (position.y <= 0) {
+        return 0;
+      }
+
+      return newVelocity;
+    });
 
     // Update camera to follow player (third person)
     const cameraOffset = new THREE.Vector3(0, CAMERA_HEIGHT, CAMERA_DISTANCE);

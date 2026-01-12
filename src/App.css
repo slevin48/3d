@@ -232,6 +232,12 @@
   border-color: #3b82f6;
 }
 
+.control-btn.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
 .model-info {
   position: absolute;
   top: 1rem;
@@ -256,6 +262,23 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.file-name-edit {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-radius: 4px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  max-width: 200px;
+  outline: none;
+}
+
+.file-name-edit:focus {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.15);
 }
 
 .file-size {

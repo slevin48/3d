@@ -1,10 +1,11 @@
-import { Suspense, useState, useCallback } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Suspense, useState, useCallback, useRef, useEffect } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { Sky } from '@react-three/drei';
 import World from './Game/World';
 import PlayerController from './Game/PlayerController';
 import PlacedModel from './Game/PlacedModel';
 import MobileControls from './Game/MobileControls';
+import Minimap from './Game/Minimap';
 import { useGame } from '../contexts/GameContext';
 import './GameView.css';
 
@@ -17,10 +18,30 @@ function LoadingBox() {
   );
 }
 
+function ScreenshotHelper({ onScreenshotRef }) {
+  const { gl } = useThree();
+
+  useEffect(() => {
+    onScreenshotRef.current = () => {
+      const canvas = gl.domElement;
+      const dataURL = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `bruce3d-${Date.now()}.png`;
+      link.href = dataURL;
+      link.click();
+    };
+  }, [gl, onScreenshotRef]);
+
+  return null;
+}
+
 export default function GameView({ onBack }) {
   const { savedModels } = useGame();
   const [joystickInput, setJoystickInput] = useState({ x: 0, y: 0 });
   const [cameraInput, setCameraInput] = useState({ x: 0, y: 0 });
+  const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0, z: 10 });
+  const [playerRotation, setPlayerRotation] = useState(0);
+  const screenshotRef = useRef(null);
 
   const handleJoystickMove = useCallback((input) => {
     setJoystickInput(input);
@@ -28,6 +49,11 @@ export default function GameView({ onBack }) {
 
   const handleCameraRotate = useCallback((input) => {
     setCameraInput(input);
+  }, []);
+
+  const handlePlayerUpdate = useCallback((position, rotation) => {
+    setPlayerPosition(position);
+    setPlayerRotation(rotation);
   }, []);
 
   return (
@@ -41,8 +67,13 @@ export default function GameView({ onBack }) {
         <div className="player-name">
           <span className="name-tag">BRUCE</span>
         </div>
-        <div className="model-count">
-          <span>{savedModels.length} models in world</span>
+        <div className="hud-right">
+          <button className="screenshot-btn" onClick={() => screenshotRef.current?.()} title="Take Screenshot">
+            <span style={{ fontSize: '18px' }}>&#x1F4F7;</span>
+          </button>
+          <div className="model-count">
+            <span>{savedModels.length} models in world</span>
+          </div>
         </div>
       </div>
 
@@ -54,6 +85,12 @@ export default function GameView({ onBack }) {
         <div className="help-item">
           <kbd>Q</kbd><kbd>E</kbd> Rotate camera
         </div>
+        <div className="help-item">
+          <kbd>Space</kbd> Jump
+        </div>
+        <div className="help-item">
+          <kbd>Shift</kbd> Sprint
+        </div>
       </div>
 
       {/* 3D Canvas */}
@@ -62,6 +99,7 @@ export default function GameView({ onBack }) {
         camera={{ position: [0, 5, 15], fov: 60 }}
         style={{ background: 'linear-gradient(180deg, #87ceeb 0%, #e0f0ff 100%)' }}
       >
+        <ScreenshotHelper onScreenshotRef={screenshotRef} />
         {/* Lighting */}
         <ambientLight intensity={0.4} />
         <directionalLight
@@ -92,6 +130,7 @@ export default function GameView({ onBack }) {
           <PlayerController
             joystickInput={joystickInput}
             cameraRotationInput={cameraInput}
+            onPlayerUpdate={handlePlayerUpdate}
           />
 
           {/* Placed models from garage */}
@@ -106,6 +145,9 @@ export default function GameView({ onBack }) {
         onJoystickMove={handleJoystickMove}
         onCameraRotate={handleCameraRotate}
       />
+
+      {/* Minimap */}
+      <Minimap playerPosition={playerPosition} playerRotation={playerRotation} />
     </div>
   );
 }
