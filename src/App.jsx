@@ -39,6 +39,18 @@ function AppContent() {
     setGameMode('garage');
   }, [setGameMode]);
 
+  const handleDeleteModel = useCallback(() => {
+    if (window.confirm('Delete this model?')) {
+      handleReset();
+    }
+  }, [handleReset]);
+
+  const handleRenameModel = useCallback((newName) => {
+    if (fileData) {
+      setFileData({ ...fileData, name: newName });
+    }
+  }, [fileData]);
+
   // Open World Mode
   if (gameMode === 'world') {
     return <GameView onBack={handleBackToGarage} />;
@@ -84,7 +96,12 @@ function AppContent() {
         {!fileData ? (
           <FileUpload onFileLoad={handleFileLoad} isLoading={isLoading} />
         ) : (
-          <ModelViewer fileData={fileData} onModelLoad={handleModelLoad} />
+          <ModelViewer
+            fileData={fileData}
+            onModelLoad={handleModelLoad}
+            onDelete={handleDeleteModel}
+            onRename={handleRenameModel}
+          />
         )}
       </main>
 
