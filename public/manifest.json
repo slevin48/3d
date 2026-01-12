@@ -1,0 +1,20 @@
+{
+  "name": "Bruce3D.win 🏆",
+  "short_name": "Bruce3D",
+  "description": "3D model viewer and Minecraft-style open world explorer",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#3b82f6",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "utilities"]
+}

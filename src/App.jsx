@@ -54,7 +54,7 @@ function AppContent() {
             <path d="M2 17l10 5 10-5" />
             <path d="M2 12l10 5 10-5" />
           </svg>
-          <h1>3D Print Viewer</h1>
+          <h1>Bruce3D.win 🏆</h1>
         </div>
 
         <div className="header-actions">
