@@ -2,7 +2,10 @@
 
 A web-based 3D model viewer for 3D printing businesses. Upload and visualize STL, OBJ, GLTF, and GLB files directly in your browser.
 
-**Live Demo:** https://slevin48.github.io/3d/
+**Live Demo:** https://bruce3d.win/
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ad8cb974-14bc-44ea-9896-6cd612178c94" />
+
 
 ## Features
 
@@ -14,6 +17,13 @@ A web-based 3D model viewer for 3D printing businesses. Upload and visualize STL
 - **File Info** - Displays filename and file size
 
 ## Getting Started
+
+### Export from Onshape
+
+<img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/c716daf6-1700-4c0a-bcca-9573aa575687" />
+
+
+## Contribute
 
 ```bash
 # Install dependencies
